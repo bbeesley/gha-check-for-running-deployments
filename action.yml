@@ -26,13 +26,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: get-latest-aws-sdk
-      run: |
-        cd /tmp
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        ./aws/install
-      shell: bash
     - name: count-deployments
       env:
         AWS_DEFAULT_REGION: ${{ inputs.region }}
