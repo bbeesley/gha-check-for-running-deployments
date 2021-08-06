@@ -1,0 +1,43 @@
+name: check-for-running-deployments
+author: Bill Beesley <bill.beesley@dazn.com>
+description: Simply counts running deployments
+branding:
+  icon: box
+  color: purple
+inputs:
+  region:
+    description: AWS region to count deployments in
+    required: false
+    default: eu-central-1
+  application-name:
+    description: The CodeDeploy application name
+    required: true
+  deployment-group-name:
+    description: The CodeDeploy deployment group name
+    required: true
+  deployment-status:
+    description: Count deployments with this status
+    required: true
+    default: InProgress
+outputs:
+  deployments:
+    description: "The number of deployments"
+    value: ${{ steps.count-deployments.outputs.deployments }}
+runs:
+  using: "composite"
+  steps:
+    - name: get-latest-aws-sdk
+      run: |
+        cd /tmp
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        ./aws/install
+      shell: bash
+    - name: count-deployments
+      env:
+        AWS_DEFAULT_REGION: ${{ inputs.region }}
+      run: |
+        aws deploy list-deployments --application-name ${{ inputs.application-name }} --deployment-group-name ${{ inputs.deployment-group-name }} --include-only-statuses ${{ inputs.deployment-status }} --output text
+        COUNT="$(aws deploy list-deployments --application-name ${{ inputs.application-name }} --deployment-group-name ${{ inputs.deployment-group-name }} --include-only-statuses ${{ inputs.deployment-status }} --output text | wc -l)"
+        echo "::set-output name=deployments::${COUNT}"
+      shell: bash
