@@ -31,6 +31,7 @@ runs:
         AWS_DEFAULT_REGION: ${{ inputs.region }}
       run: |
         aws deploy list-deployments --application-name ${{ inputs.application-name }} --deployment-group-name ${{ inputs.deployment-group-name }} --include-only-statuses ${{ inputs.deployment-status }} --output text
+        which jq
         COUNT="$(aws deploy list-deployments --application-name ${{ inputs.application-name }} --deployment-group-name ${{ inputs.deployment-group-name }} --include-only-statuses ${{ inputs.deployment-status }} --output text | wc -l)"
         echo "::set-output name=deployments::${COUNT}"
       shell: bash
