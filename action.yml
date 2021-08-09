@@ -27,6 +27,7 @@ runs:
   using: "composite"
   steps:
     - name: count-deployments
+      id: count-deployments
       env:
         AWS_DEFAULT_REGION: ${{ inputs.region }}
       run: |
