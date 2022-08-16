@@ -28,10 +28,8 @@ runs:
   steps:
     - name: count-deployments
       id: count-deployments
-      env:
-        AWS_DEFAULT_REGION: ${{ inputs.region }}
       run: |
-        COUNT="$(aws deploy list-deployments --application-name ${{ inputs.application-name }} --deployment-group-name ${{ inputs.deployment-group-name }} --include-only-statuses ${{ inputs.deployment-status }}  | jq '.deployments | length')"
+        COUNT="$(aws deploy list-deployments --region ${{ inputs.region }} --application-name ${{ inputs.application-name }} --deployment-group-name ${{ inputs.deployment-group-name }} --include-only-statuses ${{ inputs.deployment-status }}  | jq '.deployments | length')"
         echo "${COUNT}"
         echo "::set-output name=deployments::${COUNT}"
       shell: bash
